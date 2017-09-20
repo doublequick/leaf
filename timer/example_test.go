@@ -22,7 +22,7 @@ func ExampleTimer() {
 	t.Stop()
 
 	// dispatch
-	(<-d.ChanTimer).Cb()
+	(<-d.ChanTimerTask).Cb()
 
 	// Output:
 	// My name is Leaf
@@ -48,7 +48,7 @@ func ExampleCron() {
 	d := timer.NewDispatcher(10)
 
 	// cron expr
-	cronExpr, err := timer.NewCronExpr("* * * * * *")
+	cronExpr, err := timer.NewCronExpr("* * * * * *") // 每秒钟执行一次
 	if err != nil {
 		return
 	}
@@ -61,7 +61,7 @@ func ExampleCron() {
 	})
 
 	// dispatch
-	(<-d.ChanTimer).Cb()
+	(<-d.ChanTimerTask).Cb()
 
 	// Output:
 	// My name is Leaf

@@ -15,7 +15,7 @@ type Skeleton struct {
 	AsynCallLen        int
 	ChanRPCServer      *chanrpc.Server
 	g                  *g.Go
-	dispatcher         *timer.Dispatcher
+	dispatcher         *timer.Dispatcher // 定时器
 	client             *chanrpc.Client
 	server             *chanrpc.Server
 	commandServer      *chanrpc.Server
@@ -37,16 +37,20 @@ func (s *Skeleton) Init() {
 	s.client = chanrpc.NewClient(s.AsynCallLen)
 	s.server = s.ChanRPCServer
 
+	// 初始化同步 server
 	if s.server == nil {
 		s.server = chanrpc.NewServer(0)
 	}
+
+	// 初始化同步 command server
 	s.commandServer = chanrpc.NewServer(0)
 }
 
+// Run 实现了 Module 接口的 Run 方法
 func (s *Skeleton) Run(closeSig chan bool) {
 	for {
 		select {
-		case <-closeSig:
+		case <-closeSig: // 收到关闭信号
 			s.commandServer.Close()
 			s.server.Close()
 			for !s.g.Idle() || !s.client.Idle() {
@@ -62,13 +66,13 @@ func (s *Skeleton) Run(closeSig chan bool) {
 			s.commandServer.Exec(ci)
 		case cb := <-s.g.ChanCb:
 			s.g.Cb(cb)
-		case t := <-s.dispatcher.ChanTimer:
+		case t := <-s.dispatcher.ChanTimerTask:
 			t.Cb()
 		}
 	}
 }
 
-func (s *Skeleton) AfterFunc(d time.Duration, cb func()) *timer.Timer {
+func (s *Skeleton) AfterFunc(d time.Duration, cb func()) *timer.TimerTask {
 	if s.TimerDispatcherLen == 0 {
 		panic("invalid TimerDispatcherLen")
 	}

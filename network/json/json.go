@@ -54,7 +54,7 @@ func (p *Processor) Register(msg interface{}) string {
 	return msgID
 }
 
-// It's dangerous to call the method on routing or marshaling (unmarshaling)
+// SetRouter : 设置消息路由 - It's dangerous to call the method on routing or marshaling (unmarshaling)
 func (p *Processor) SetRouter(msg interface{}, msgRouter *chanrpc.Server) {
 	msgType := reflect.TypeOf(msg)
 	if msgType == nil || msgType.Kind() != reflect.Ptr {
@@ -66,7 +66,7 @@ func (p *Processor) SetRouter(msg interface{}, msgRouter *chanrpc.Server) {
 		log.Fatal("message %v not registered", msgID)
 	}
 
-	i.msgRouter = msgRouter
+	i.msgRouter = msgRouter  // 设置`MsgInfo`的`msgRouter`
 }
 
 // It's dangerous to call the method on routing or marshaling (unmarshaling)
@@ -94,7 +94,7 @@ func (p *Processor) SetRawHandler(msgID string, msgRawHandler MsgHandler) {
 	i.msgRawHandler = msgRawHandler
 }
 
-// goroutine safe
+// Route : 消息路由 - goroutine safe
 func (p *Processor) Route(msg interface{}, userData interface{}) error {
 	// raw
 	if msgRaw, ok := msg.(MsgRaw); ok {

@@ -7,6 +7,7 @@ import (
 	"sync"
 )
 
+// Module 模块接口
 type Module interface {
 	OnInit()
 	OnDestroy()

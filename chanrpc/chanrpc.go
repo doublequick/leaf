@@ -64,6 +64,7 @@ func assert(i interface{}) []interface{} {
 	}
 }
 
+// Register : 注册消息的处理函数
 // you must call the function before calling Open and Go
 func (s *Server) Register(id interface{}, f interface{}) {
 	switch f.(type) {
@@ -135,7 +136,7 @@ func (s *Server) Exec(ci *CallInfo) {
 	}
 }
 
-// goroutine safe
+// Go : 执行操作 - goroutine safe
 func (s *Server) Go(id interface{}, args ...interface{}) {
 	f := s.functions[id]
 	if f == nil {
@@ -147,8 +148,8 @@ func (s *Server) Go(id interface{}, args ...interface{}) {
 	}()
 
 	s.ChanCall <- &CallInfo{
-		f:    f,
-		args: args,
+		f:    f,     // 函数
+		args: args,  // 参数
 	}
 }
 

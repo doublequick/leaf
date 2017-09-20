@@ -53,7 +53,7 @@ func (server *TCPServer) init() {
 	server.ln = ln
 	server.conns = make(ConnSet)
 
-	// msg parser
+	// msg parser 消息解析器, 规定了消息的长度字段、size范围、大小端
 	msgParser := NewMsgParser()
 	msgParser.SetMsgLen(server.LenMsgLen, server.MinMsgLen, server.MaxMsgLen)
 	msgParser.SetByteOrder(server.LittleEndian)
